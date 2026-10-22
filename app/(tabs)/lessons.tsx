@@ -1,12 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import type { ComponentProps } from "react";
+import { ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { PressableCard } from "../../components/PressableCard";
 
 const lessonsData = [
   {
@@ -46,6 +42,7 @@ const lessonsData = [
 export default function LessonsScreen() {
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
+      <StatusBar barStyle="light-content" />
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -56,26 +53,34 @@ export default function LessonsScreen() {
         </Text>
 
         {lessonsData.map((lesson) => (
-          <TouchableOpacity key={lesson.id} style={styles.lessonCard}>
-            <View style={styles.cardHeader}>
-              <View style={styles.iconBox}>
-                <Ionicons name={lesson.icon as any} size={22} color="#2563EB" />
+          <PressableCard key={lesson.id} style={styles.lessonCardWrapper}>
+            <View style={styles.lessonCard}>
+              <View style={styles.cardHeader}>
+                <View style={styles.iconBox}>
+                  <Ionicons
+                    name={
+                      lesson.icon as ComponentProps<typeof Ionicons>["name"]
+                    }
+                    size={22}
+                    color="#2563EB"
+                  />
+                </View>
+                <View style={styles.titleBox}>
+                  <Text style={styles.lessonTitle}>{lesson.title}</Text>
+                  <Text style={styles.lessonDetail}>
+                    {lesson.completed} / {lesson.total} Konu Tamamlandı
+                  </Text>
+                </View>
+                <Text style={styles.percentText}>%{lesson.progress}</Text>
               </View>
-              <View style={styles.titleBox}>
-                <Text style={styles.lessonTitle}>{lesson.title}</Text>
-                <Text style={styles.lessonDetail}>
-                  {lesson.completed} / {lesson.total} Konu Tamamlandı
-                </Text>
-              </View>
-              <Text style={styles.percentText}>%{lesson.progress}</Text>
-            </View>
 
-            <View style={styles.progressBackground}>
-              <View
-                style={[styles.progressBar, { width: `${lesson.progress}%` }]}
-              />
+              <View style={styles.progressBackground}>
+                <View
+                  style={[styles.progressBar, { width: `${lesson.progress}%` }]}
+                />
+              </View>
             </View>
-          </TouchableOpacity>
+          </PressableCard>
         ))}
       </ScrollView>
     </SafeAreaView>
@@ -83,34 +88,44 @@ export default function LessonsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F1F5F9" },
-  scrollContent: { padding: 20, paddingBottom: 30 },
+  container: {
+    flex: 1,
+    backgroundColor: "#1E3A8A",
+  },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 40,
+  },
   pageTitle: {
     fontSize: 24,
     fontWeight: "800",
-    color: "#0F172A",
-    marginTop: 10,
+    color: "#FFFFFF",
+    marginTop: 8,
   },
   pageSubtitle: {
-    fontSize: 14,
-    color: "#64748B",
+    fontSize: 13,
+    color: "#93C5FD",
     marginBottom: 20,
     marginTop: 4,
   },
+  lessonCardWrapper: {
+    marginBottom: 14,
+  },
   lessonCard: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 16,
+    borderRadius: 18,
     padding: 16,
-    marginBottom: 14,
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 4,
   },
-  cardHeader: { flexDirection: "row", alignItems: "center", marginBottom: 12 },
+  cardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+  },
   iconBox: {
     width: 44,
     height: 44,
@@ -120,15 +135,33 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 12,
   },
-  titleBox: { flex: 1 },
-  lessonTitle: { fontSize: 15, fontWeight: "700", color: "#0F172A" },
-  lessonDetail: { fontSize: 12, color: "#64748B", marginTop: 2 },
-  percentText: { fontSize: 14, fontWeight: "700", color: "#2563EB" },
+  titleBox: {
+    flex: 1,
+  },
+  lessonTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#0F172A",
+  },
+  lessonDetail: {
+    fontSize: 12,
+    color: "#64748B",
+    marginTop: 2,
+  },
+  percentText: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#2563EB",
+  },
   progressBackground: {
     height: 6,
     backgroundColor: "#E2E8F0",
     borderRadius: 3,
     overflow: "hidden",
   },
-  progressBar: { height: "100%", backgroundColor: "#2563EB", borderRadius: 3 },
+  progressBar: {
+    height: "100%",
+    backgroundColor: "#2563EB",
+    borderRadius: 3,
+  },
 });

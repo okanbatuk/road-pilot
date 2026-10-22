@@ -1,12 +1,21 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { Platform } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TabLayout() {
+  const insets = useSafeAreaInsets();
+
+  const bottomPadding = Math.max(
+    insets.bottom,
+    Platform.OS === "android" ? 16 : 28,
+  );
+  const tabBarHeight = 64 + bottomPadding;
+
   return (
     <Tabs
       screenOptions={{
-        headerShown: false, // Üstteki varsayılan "Tab One" barını tamamen gizler
+        headerShown: false,
         tabBarActiveTintColor: "#2563EB",
         tabBarInactiveTintColor: "#94A3B8",
         tabBarStyle: {
@@ -17,13 +26,14 @@ export default function TabLayout() {
           shadowOffset: { width: 0, height: -4 },
           shadowOpacity: 0.08,
           shadowRadius: 12,
-          height: Platform.OS === "ios" ? 88 : 68,
-          paddingBottom: Platform.OS === "ios" ? 28 : 10,
-          paddingTop: 8,
+          height: tabBarHeight,
+          paddingBottom: bottomPadding,
+          paddingTop: 10,
         },
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: "600",
+          marginTop: 2,
         },
       }}
     >

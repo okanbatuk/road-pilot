@@ -1,127 +1,174 @@
 import { Ionicons } from "@expo/vector-icons";
 import {
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { PressableCard } from "../../components/PressableCard";
 import { useAuth } from "../../context/AuthContext";
 
 export default function HomeScreen() {
   const { session, signOut } = useAuth();
 
-  // Get user name from Supabase user metadata or fallback
   const userName =
     session?.user?.user_metadata?.full_name ||
     session?.user?.email?.split("@")[0] ||
     "Sürücü Adayı";
 
+  const userInitial = userName.charAt(0).toUpperCase();
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <StatusBar barStyle="light-content" />
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header Section */}
         <View style={styles.header}>
-          <View>
-            <Text style={styles.welcomeText}>Hoş Geldin 👋</Text>
-            <Text style={styles.userNameText}>{userName}</Text>
-          </View>
-          <TouchableOpacity style={styles.logoutButton} onPress={signOut}>
-            <Ionicons name="log-out-outline" size={22} color="#1E3A8A" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Hero Banner: Driving Course Progress */}
-        <View style={styles.heroCard}>
-          <View style={styles.heroHeader}>
-            <View style={styles.heroTag}>
-              <Text style={styles.heroTagText}>B Sınıfı Ehliyet</Text>
+          <View style={styles.userInfoRow}>
+            <View style={styles.avatarContainer}>
+              <Text style={styles.avatarText}>{userInitial}</Text>
             </View>
-            <Ionicons name="ribbon-outline" size={24} color="#93C5FD" />
+            <View>
+              <Text style={styles.welcomeText}>Hoş Geldin 👋</Text>
+              <Text style={styles.userNameText}>{userName}</Text>
+            </View>
           </View>
 
-          <Text style={styles.heroTitle}>Teorik Eğitim Tamamlanma</Text>
-          <Text style={styles.heroSubtitle}>
-            Sınav öncesi son %35'lik kısım kaldı!
-          </Text>
+          <View style={styles.headerActions}>
+            <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
+              <Ionicons
+                name="notifications-outline"
+                size={20}
+                color="#FFFFFF"
+              />
+              <View style={styles.notificationBadge} />
+            </TouchableOpacity>
 
-          {/* Progress Bar */}
-          <View style={styles.progressBackground}>
-            <View style={[styles.progressBar, { width: "65%" }]} />
-          </View>
-          <View style={styles.progressLabelRow}>
-            <Text style={styles.progressPercent}>%65 Tamamlandı</Text>
-            <Text style={styles.progressRemaining}>13 / 20 Ders</Text>
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={signOut}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="log-out-outline" size={20} color="#F87171" />
+            </TouchableOpacity>
           </View>
         </View>
 
-        {/* Upcoming Practice / Lesson Alert */}
+        <PressableCard style={styles.heroCardWrapper}>
+          <View style={styles.heroCard}>
+            <View style={styles.heroHeader}>
+              <View style={styles.heroTag}>
+                <Text style={styles.heroTagText}>B Sınıfı Ehliyet</Text>
+              </View>
+              <Ionicons name="ribbon-outline" size={24} color="#2563EB" />
+            </View>
+
+            <Text style={styles.heroTitle}>Teorik Eğitim Tamamlanma</Text>
+            <Text style={styles.heroSubtitle}>
+              Sınav öncesi son %35'lik kısım kaldı!
+            </Text>
+
+            <View style={styles.progressBackground}>
+              <View style={[styles.progressBar, { width: "65%" }]} />
+            </View>
+            <View style={styles.progressLabelRow}>
+              <Text style={styles.progressPercent}>%65 Tamamlandı</Text>
+              <Text style={styles.progressRemaining}>13 / 20 Ders</Text>
+            </View>
+          </View>
+        </PressableCard>
+
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Yaklaşan Randevun</Text>
         </View>
-        <View style={styles.appointmentCard}>
-          <View style={styles.appointmentIconContainer}>
-            <Ionicons name="car" size={28} color="#2563EB" />
-          </View>
-          <View style={styles.appointmentInfo}>
-            <Text style={styles.appointmentTitle}>
-              Direksiyon Uygulama Dersi
-            </Text>
-            <Text style={styles.appointmentDetail}>Eğitmen: Ahmet Yılmaz</Text>
-            <View style={styles.appointmentTimeRow}>
-              <Ionicons name="time-outline" size={14} color="#64748B" />
-              <Text style={styles.appointmentTimeText}>
-                Yarın, 14:30 - 15:30
+
+        <PressableCard style={styles.appointmentCardWrapper}>
+          <View style={styles.appointmentCard}>
+            <View style={styles.appointmentIconContainer}>
+              <Ionicons name="car-sport" size={26} color="#2563EB" />
+            </View>
+            <View style={styles.appointmentInfo}>
+              <Text style={styles.appointmentTitle}>
+                Direksiyon Uygulama Dersi
               </Text>
+              <Text style={styles.appointmentDetail}>
+                Eğitmen: Ahmet Yılmaz
+              </Text>
+              <View style={styles.appointmentTimeRow}>
+                <Ionicons name="time-outline" size={14} color="#2563EB" />
+                <Text style={styles.appointmentTimeText}>
+                  Yarın, 14:30 - 15:30
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
+        </PressableCard>
 
-        {/* Quick Action Grid */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Hızlı Erişim</Text>
         </View>
 
         <View style={styles.gridContainer}>
-          {/* Card 1: Exam Practice */}
-          <TouchableOpacity style={styles.gridCard}>
-            <View style={[styles.gridIconBox, { backgroundColor: "#EFF6FF" }]}>
-              <Ionicons name="document-text" size={26} color="#2563EB" />
+          <PressableCard style={styles.gridCardWrapper}>
+            <View style={styles.gridCard}>
+              <View
+                style={[styles.gridIconBox, { backgroundColor: "#EFF6FF" }]}
+              >
+                <Ionicons
+                  name="document-text-outline"
+                  size={24}
+                  color="#2563EB"
+                />
+              </View>
+              <Text style={styles.gridTitle}>Çıkmış Sorular</Text>
+              <Text style={styles.gridSubtitle}>Deneme Çöz</Text>
             </View>
-            <Text style={styles.gridTitle}>Çıkmış Sorular</Text>
-            <Text style={styles.gridSubtitle}>Deneme Çöz</Text>
-          </TouchableOpacity>
+          </PressableCard>
 
-          {/* Card 2: Video Lessons */}
-          <TouchableOpacity style={styles.gridCard}>
-            <View style={[styles.gridIconBox, { backgroundColor: "#F0FDF4" }]}>
-              <Ionicons name="play-circle" size={26} color="#16A34A" />
+          <PressableCard style={styles.gridCardWrapper}>
+            <View style={styles.gridCard}>
+              <View
+                style={[styles.gridIconBox, { backgroundColor: "#F0FDF4" }]}
+              >
+                <Ionicons
+                  name="play-circle-outline"
+                  size={24}
+                  color="#16A34A"
+                />
+              </View>
+              <Text style={styles.gridTitle}>Ders Videoları</Text>
+              <Text style={styles.gridSubtitle}>Konu Anlatımı</Text>
             </View>
-            <Text style={styles.gridTitle}>Ders Videoları</Text>
-            <Text style={styles.gridSubtitle}>Konu Anlatımı</Text>
-          </TouchableOpacity>
+          </PressableCard>
 
-          {/* Card 3: Traffic Signs */}
-          <TouchableOpacity style={styles.gridCard}>
-            <View style={[styles.gridIconBox, { backgroundColor: "#FFF7ED" }]}>
-              <Ionicons name="warning" size={26} color="#EA580C" />
+          <PressableCard style={styles.gridCardWrapper}>
+            <View style={styles.gridCard}>
+              <View
+                style={[styles.gridIconBox, { backgroundColor: "#FFF7ED" }]}
+              >
+                <Ionicons name="warning-outline" size={24} color="#EA580C" />
+              </View>
+              <Text style={styles.gridTitle}>Trafik İşaretleri</Text>
+              <Text style={styles.gridSubtitle}>Katalog & Test</Text>
             </View>
-            <Text style={styles.gridTitle}>Trafik İşaretleri</Text>
-            <Text style={styles.gridSubtitle}>Katalog & Test</Text>
-          </TouchableOpacity>
+          </PressableCard>
 
-          {/* Card 4: Course Info */}
-          <TouchableOpacity style={styles.gridCard}>
-            <View style={[styles.gridIconBox, { backgroundColor: "#F5F3FF" }]}>
-              <Ionicons name="school" size={26} color="#7C3AED" />
+          <PressableCard style={styles.gridCardWrapper}>
+            <View style={styles.gridCard}>
+              <View
+                style={[styles.gridIconBox, { backgroundColor: "#F5F3FF" }]}
+              >
+                <Ionicons name="school-outline" size={24} color="#7C3AED" />
+              </View>
+              <Text style={styles.gridTitle}>Kursum</Text>
+              <Text style={styles.gridSubtitle}>Duyuru & Belge</Text>
             </View>
-            <Text style={styles.gridTitle}>Kursum</Text>
-            <Text style={styles.gridSubtitle}>Duyuru & Belge</Text>
-          </TouchableOpacity>
+          </PressableCard>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -131,10 +178,10 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#1E3A8A",
   },
   scrollContent: {
-    padding: 20,
+    padding: 16,
     paddingBottom: 40,
   },
   header: {
@@ -142,78 +189,111 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 20,
-    marginTop: 10,
+    marginTop: 4,
+  },
+  userInfoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  avatarContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#2563EB",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.3)",
+  },
+  avatarText: {
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "700",
   },
   welcomeText: {
-    fontSize: 14,
-    color: "#64748B",
+    fontSize: 12,
+    color: "#93C5FD",
     fontWeight: "500",
   },
   userNameText: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: "800",
-    color: "#0F172A",
-    marginTop: 2,
+    color: "#FFFFFF",
   },
-  logoutButton: {
-    width: 44,
-    height: 44,
+  headerActions: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  iconButton: {
+    width: 40,
+    height: 40,
     borderRadius: 12,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#DBEAFE",
+    position: "relative",
+  },
+  notificationBadge: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#EF4444",
+  },
+  heroCardWrapper: {
+    marginBottom: 24,
   },
   heroCard: {
-    backgroundColor: "#1E3A8A", // Bizim kurumsal derin mavi
+    backgroundColor: "#FFFFFF",
     borderRadius: 20,
     padding: 20,
-    marginBottom: 24,
-    shadowColor: "#1E3A8A",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.25,
-    shadowRadius: 12,
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
     elevation: 6,
   },
   heroHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 12,
   },
   heroTag: {
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    backgroundColor: "#EFF6FF",
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 20,
   },
   heroTagText: {
-    color: "#FFFFFF",
+    color: "#2563EB",
     fontSize: 12,
-    fontWeight: "600",
+    fontWeight: "700",
   },
   heroTitle: {
-    color: "#FFFFFF",
+    color: "#0F172A",
     fontSize: 18,
-    fontWeight: "700",
+    fontWeight: "800",
     marginBottom: 4,
   },
   heroSubtitle: {
-    color: "#93C5FD",
+    color: "#64748B",
     fontSize: 13,
     marginBottom: 18,
   },
   progressBackground: {
     height: 8,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    backgroundColor: "#E2E8F0",
     borderRadius: 4,
     overflow: "hidden",
     marginBottom: 8,
   },
   progressBar: {
     height: "100%",
-    backgroundColor: "#60A5FA",
+    backgroundColor: "#2563EB",
     borderRadius: 4,
   },
   progressLabelRow: {
@@ -222,40 +302,40 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   progressPercent: {
-    color: "#FFFFFF",
+    color: "#2563EB",
     fontSize: 12,
-    fontWeight: "600",
+    fontWeight: "700",
   },
   progressRemaining: {
-    color: "#93C5FD",
+    color: "#64748B",
     fontSize: 12,
   },
   sectionHeader: {
     marginBottom: 12,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "700",
-    color: "#1E293B",
+    color: "#FFFFFF",
+  },
+  appointmentCardWrapper: {
+    marginBottom: 24,
   },
   appointmentCard: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 16,
+    borderRadius: 18,
     padding: 16,
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 24,
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 4,
   },
   appointmentIconContainer: {
-    width: 52,
-    height: 52,
+    width: 50,
+    height: 50,
     borderRadius: 14,
     backgroundColor: "#EFF6FF",
     justifyContent: "center",
@@ -292,29 +372,29 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     gap: 12,
   },
-  gridCard: {
+  gridCardWrapper: {
     width: "48%",
+  },
+  gridCard: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 16,
+    borderRadius: 18,
     padding: 16,
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 4,
   },
   gridIconBox: {
-    width: 44,
-    height: 44,
+    width: 42,
+    height: 42,
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 12,
   },
   gridTitle: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "700",
     color: "#0F172A",
     marginBottom: 2,
